@@ -1,0 +1,10 @@
+# OS junk
+.DS_Store
+
+# Dev-only / non-site artifacts (not needed for the live site)
+preview-finale.html
+新手使用说明.md
+
+# Editor / system
+*.swp
+Thumbs.db

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>For Crystal · 一本相册</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Chapter 1 / Opening -->
+<section class="chapter" id="chapter-opening">
+  <div class="opening-wrap">
+    <div class="eyebrow" id="opening-eyebrow">HAPPY BIRTHDAY</div>
+    <div class="big-name">Crystal</div>
+    <div class="sub-name">10月3日 · 农历八月廿三</div>
+    <div class="dotline"><span></span><span></span><span></span></div>
+
+    <div class="opening-cake" id="cake" role="button" aria-label="吹蜡烛">
+      <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+        <rect x="106" y="20" width="8" height="34" rx="2" fill="#FFD1DC"/>
+        <ellipse cx="110" cy="18" rx="6" ry="9" fill="#FFD479"/>
+        <ellipse cx="110" cy="72" rx="50" ry="10" fill="#ffffff"/>
+        <rect x="60" y="72" width="100" height="30" rx="6" fill="#ffffff"/>
+        <circle cx="78" cy="86" r="3" fill="#FFD1DC"/>
+        <circle cx="110" cy="86" r="3" fill="#C5E0F2"/>
+        <circle cx="142" cy="86" r="3" fill="#FFD1DC"/>
+        <ellipse cx="110" cy="116" rx="72" ry="12" fill="#FFD1DC"/>
+        <rect x="38" y="116" width="144" height="36" rx="8" fill="#FFD1DC"/>
+        <path d="M38 116 Q52 112 66 116 T94 116 T122 116 T150 116 T182 116" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.7"/>
+        <ellipse cx="110" cy="166" rx="96" ry="14" fill="#C5E0F2"/>
+        <rect x="14" y="166" width="192" height="42" rx="10" fill="#C5E0F2"/>
+        <circle cx="110" cy="68" r="5" fill="#D4738D"/>
+        <path d="M110 64 Q114 58 118 60" stroke="#7E8B6F" stroke-width="1.5" fill="none"/>
+      </svg>
+      <div class="flame" id="flame"></div>
+    </div>
+
+    <div style="font-size:12px; letter-spacing:3px; color:var(--ink-soft); margin-top:18px;">
+      点一下小蜡烛
+    </div>
+  </div>
+</section>
+
+<!-- Wish Overlay -->
+<div class="wish-overlay" id="wish-overlay">
+  <div class="wish-text">闭上眼睛 · 许个愿吧</div>
+  <button class="btn primary" id="wish-btn">我 许 好 了</button>
+</div>
+
+<!-- Chapter 2 / Quiz 1 -->
+<section class="chapter" id="chapter-quiz-travel">
+  <div class="quiz-wrap">
+    <div class="eyebrow">CHAPTER ONE · TRAVEL</div>
+    <div class="sub-name">回忆第一站 · 从一次旅行开始</div>
+    <div class="dotline"><span></span></div>
+
+    <div class="quiz-card glass">
+      <div class="quiz-q">还记得我们第一次一起坐地铁去的目的地吗？</div>
+      <input type="text" class="text-input" id="quiz-travel-input" placeholder="" autocomplete="off">
+      <div class="quiz-hint" id="quiz-travel-hint"></div>
+    </div>
+
+    <div class="quiz-success" id="quiz-travel-success">回 到 那 一 天</div>
+    <button class="btn primary hidden" id="go-travel">进入回忆</button>
+  </div>
+</section>
+
+<!-- Chapter 3 / Travel Album -->
+<!-- chapter-album-travel 作为锚点章节，第一张相册会替换它的内容 -->
+<section class="chapter" id="chapter-album-travel" style="display:none;"></section>
+
+<!-- Chapter / Open Q Travel -->
+<section class="chapter" id="chapter-chat-travel">
+  <div class="chat-wrap">
+    <div class="chat-eyebrow">SHARED · A TINY QUESTION</div>
+    <div class="chat-row">
+      <div class="bubble her" id="chat-travel-q">这趟旅行里，你最想再去一次的是？</div>
+    </div>
+    <div class="chat-row me">
+      <div class="bubble me" style="opacity:.5">在这里写下你的回答</div>
+    </div>
+    <div class="chat-input-row">
+      <textarea class="text-input" id="chat-travel-input" placeholder="" rows="2"></textarea>
+      <button class="btn primary" id="chat-travel-save">记下</button>
+    </div>
+    <div class="chat-next hidden">
+      <button class="btn" id="go-quiz-music">下一章</button>
+    </div>
+  </div>
+</section>
+
+<!-- Chapter 4 / Quiz 2 -->
+<section class="chapter" id="chapter-quiz-music">
+  <div class="quiz-wrap">
+    <div class="eyebrow">CHAPTER TWO · FESTIVAL</div>
+    <div class="sub-name">回忆第二站 · 从一次合唱开始</div>
+    <div class="dotline"><span></span></div>
+
+    <div class="quiz-card glass">
+      <div class="quiz-q">我们的第一场音乐节是？</div>
+      <input type="text" class="text-input" id="quiz-music-input" placeholder="" autocomplete="off">
+      <div class="quiz-hint" id="quiz-music-hint"></div>
+    </div>
+
+    <div class="quiz-success" id="quiz-music-success">回 到 那 一 天</div>
+    <button class="btn primary hidden" id="go-music">进入回忆</button>
+  </div>
+</section>
+
+<!-- Chapter 5 / Festival Album -->
+<!-- chapter-album-music 作为锚点章节，第一张音乐节相册会替换它的内容 -->
+<section class="chapter" id="chapter-album-music" style="display:none;"></section>
+
+<!-- Chapter / Open Q Music -->
+<section class="chapter" id="chapter-chat-music">
+  <div class="chat-wrap">
+    <div class="chat-eyebrow">SHARED · A TINY QUESTION</div>
+    <div class="chat-row">
+      <div class="bubble her" id="chat-music-q">看过的音乐节里，哪首歌你唱得最响？</div>
+    </div>
+    <div class="chat-row me">
+      <div class="bubble me" style="opacity:.5">在这里写下你的回答</div>
+    </div>
+    <div class="chat-input-row">
+      <textarea class="text-input" id="chat-music-input" placeholder="" rows="2"></textarea>
+      <button class="btn primary" id="chat-music-save">记下</button>
+    </div>
+    <div class="chat-next hidden">
+      <button class="btn" id="go-gate">下一章</button>
+    </div>
+  </div>
+</section>
+
+<!-- Chapter 6 / 魔法门：选择一座乐园 -->
+<section class="chapter" id="chapter-album-park">
+  <div class="gate-stage">
+    <div class="album-eyebrow">FAIRY · TALE · LAND</div>
+    <div class="album-title">推开一扇门</div>
+    <div class="album-sub">每一扇门里，都藏着快乐的秘密</div>
+    <div class="gate-row">
+      <button class="gate disney" data-park="disney" data-next="chapter-album-park-disney">
+        <span class="gate-roof"></span>
+      </button>
+      <button class="gate universal" data-park="universal" data-next="chapter-album-park-universal">
+        <span class="gate-roof"></span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Chapter / Open Q Park -->
+<section class="chapter" id="chapter-chat-park">
+  <div class="chat-wrap">
+    <div class="chat-eyebrow">SHARED · A TINY QUESTION</div>
+    <div class="chat-row">
+      <div class="bubble her" id="chat-park-q">在乐园里那一天，你最想永远停在哪个瞬间？</div>
+    </div>
+    <div class="chat-row me">
+      <div class="bubble me" style="opacity:.5">在这里写下你的回答</div>
+    </div>
+    <div class="chat-input-row">
+      <textarea class="text-input" id="chat-park-input" placeholder="" rows="2"></textarea>
+      <button class="btn primary" id="chat-park-save">记下</button>
+    </div>
+    <div class="chat-next hidden">
+      <button class="btn" id="go-fragments">下一章</button>
+    </div>
+  </div>
+</section>
+
+<!-- Chapter / Daily Fragments -->
+<section class="chapter fragments" id="chapter-fragments">
+  <div class="fragments-stage" id="fragments-list">
+    <div class="frag-eyebrow">DAILY · FRAGMENTS</div>
+    <div class="frag-title">日常快乐碎片</div>
+    <div class="frag-tip" id="frag-tip">刮 开 一 张 · 看 回 忆</div>
+    <div style="text-align:center; margin-top: 24px;">
+      <button class="btn primary" data-next="chapter-chat-fragments" id="next-fragments">继续旅程 →</button>
+    </div>
+  </div>
+</section>
+
+<!-- Chapter / Open Q Fragments -->
+<section class="chapter" id="chapter-chat-fragments">
+  <div class="chat-wrap">
+    <div class="chat-eyebrow">SHARED · A TINY QUESTION</div>
+    <div class="chat-row">
+      <div class="bubble her" id="chat-fragments-q">我们之间最普通的哪一天，让你偷偷笑过？</div>
+    </div>
+    <div class="chat-row me">
+      <div class="bubble me" style="opacity:.5">在这里写下你的回答</div>
+    </div>
+    <div class="chat-input-row">
+      <textarea class="text-input" id="chat-fragments-input" placeholder="" rows="2"></textarea>
+      <button class="btn primary" id="chat-fragments-save">记下</button>
+    </div>
+    <div class="chat-next hidden">
+      <button class="btn" id="go-menu">下一章</button>
+    </div>
+  </div>
+</section>
+
+<!-- Chapter / Menu 12 cards -->
+<section class="chapter" id="chapter-menu">
+  <div class="menu-head">
+    <div class="menu-eyebrow">CHAPTER FOUR · EAT WITH YOU</div>
+    <div class="menu-title">一起吃过的饭</div>
+  </div>
+  <div class="menu-grid" id="menu-grid"></div>
+  <div class="album-end">
+    <div class="end-pin">12 FLAVORS · 12 MEMORIES</div>
+    <button class="btn primary" data-next="chapter-chat-food" id="next-menu">再问你一个秘密 →</button>
+  </div>
+</section>
+
+<!-- Chapter / Open Q Food -->
+<section class="chapter" id="chapter-chat-food">
+  <div class="chat-wrap">
+    <div class="chat-eyebrow">SHARED · A TINY QUESTION</div>
+    <div class="chat-row">
+      <div class="bubble her" id="chat-food-q">你最爱的一个美食是？</div>
+    </div>
+    <div class="chat-row me">
+      <div class="bubble me" style="opacity:.5">在这里写下你的回答</div>
+    </div>
+    <div class="chat-input-row">
+      <textarea class="text-input" id="chat-food-input" placeholder="" rows="2"></textarea>
+      <button class="btn primary" id="chat-food-save">记下</button>
+    </div>
+    <div class="chat-next hidden">
+      <button class="btn" id="go-cards">下一章</button>
+    </div>
+  </div>
+</section>
+
+<!-- Chapter / Flip Cards -->
+<section class="chapter" id="chapter-cards">
+  <div class="cards-head">
+    <div class="cards-eyebrow">CHAPTER FIVE · CARDS</div>
+    <div class="cards-title">我想对你说的话</div>
+  </div>
+  <div class="cards-grid" id="cards-grid"></div>
+  <div class="album-end">
+    <div class="end-pin">6 WHISPERS · 6 CARDS</div>
+    <button class="btn primary" data-next="chapter-summary" id="next-cards">来看看你写下的</button>
+  </div>
+</section>
+
+<!-- Chapter / Summary -->
+<section class="chapter" id="chapter-summary">
+  <div class="summary-head">
+    <div class="summary-eyebrow">CHAPTER SIX · TOGETHER</div>
+    <div class="summary-title">这本相册 · 我们一起写完</div>
+  </div>
+  <div class="summary-list" id="summary-list"></div>
+  <div class="summary-empty" id="summary-empty">她 还没 留 下 任 何 回 答 哦</div>
+  <div class="summary-end">
+    <button class="btn primary" data-next="chapter-finale" id="go-finale">最 后 一 章</button>
+  </div>
+</section>
+
+<!-- Chapter / Finale -->
+<section class="chapter" id="chapter-finale">
+  <div class="finale-wrap">
+    <div class="finale-eyebrow">HAPPY · BIRTHDAY</div>
+    <div class="giftbox" id="giftbox">
+      <div class="gift-burst" id="gift-burst"></div>
+      <div class="gift-envelope">
+        <div class="gift-envelope-flap"></div>
+        <div class="gift-letter">
+          <div class="env-letter-title" id="env-letter-title">Happy Birthday, Crystal</div>
+          <div class="env-letter-msg">希望我们可以一起度过下一个下下一个下下下一个彼此的生日</div>
+        </div>
+      </div>
+      <div class="gift-body">
+        <div class="gift-cube">
+          <div class="gift-face gift-front">
+            <span class="gift-ribbon-v"></span>
+            <span class="gift-ribbon-h"></span>
+          </div>
+          <div class="gift-face gift-right"></div>
+          <div class="gift-face gift-top"></div>
+        </div>
+      </div>
+      <div class="gift-bow">
+        <span class="bow-loop bow-left"></span>
+        <span class="bow-loop bow-right"></span>
+        <span class="bow-knot"></span>
+      </div>
+      <div class="gift-hint" id="gift-hint">点 击 打 开</div>
+    </div>
+    <button class="btn primary hidden" id="restart-btn">再 看 一 遍</button>
+  </div>
+</section>
+
+<canvas class="firework-canvas" id="fw"></canvas>
+
+<div class="music-hint hidden" id="music-hint">轻点播放音乐</div>
+<button class="music-btn hidden" id="music-btn" aria-label="播放音乐">
+  <div class="bar"><span></span><span></span><span></span></div>
+</button>
+
+<!-- 终章后常驻的左侧旅程入口（细线书签） -->
+<button class="journey-tab" id="journey-tab" aria-label="重温旅程" hidden>
+  <span class="journey-tab-line"></span>
+  <span class="journey-tab-text">重 温 旅 程</span>
+</button>
+
+<script src="content.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
