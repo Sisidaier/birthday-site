@@ -1302,35 +1302,8 @@ textarea.text-input {
 
 /* 盒盖已移除：点击后盒子整体消失，原位弹信封（见 .gift-envelope） */
 
-/* 蝴蝶结：压在立体盒顶部中央 */
-.gift-bow {
-  position: absolute;
-  left: 50%; top: 20px;
-  width: 64px; height: 36px;
-  transform: translateX(-50%);
-  z-index: 5;
-}
-.bow-loop {
-  position: absolute; top: 2px;
-  width: 30px; height: 30px;
-  background: linear-gradient(180deg, #F4A9C0, #E78AA8);
-  border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%;
-  box-shadow: inset 0 -2px 4px rgba(92,75,82,0.18);
-}
-.bow-loop.bow-left  { left: 0;  transform: rotate(-22deg); }
-.bow-loop.bow-right { right: 0; transform: rotate(22deg); }
-.bow-knot {
-  position: absolute; left: 50%; top: 8px;
-  width: 16px; height: 18px; margin-left: -8px;
-  background: linear-gradient(180deg, #E78AA8, #D4738D);
-  border-radius: 5px;
-  z-index: 2;
-}
-/* 点击后盒子（含蝴蝶结）直接消失 */
 .giftbox.open .gift-body { animation: box-vanish .5s ease .1s forwards; }
-.giftbox.open .gift-bow  { animation: bow-vanish .5s ease .1s forwards; }
 @keyframes box-vanish { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(.7); } }
-@keyframes bow-vanish  { 0% { opacity: 1; } 100% { opacity: 0; } }
 
 /* 光晕闪现 */
 .gift-burst {
