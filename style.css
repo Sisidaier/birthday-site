@@ -7,7 +7,7 @@
    ========================================================================== */
 
 /* ---------- 本地字体（92 个 unicode-range 切片，离线可用） ---------- */
-@import url('./fonts/msz.css');
+@import url('./assets/fonts/msz.css');
 
 /* ---------- 设计 Token ---------- */
 :root {
@@ -1354,18 +1354,23 @@ textarea.text-input {
   border-radius: 10px 10px 0 0;
   z-index: 2;
 }
-/* 信纸：信封内的白底板，祝福字号缩小不溢出 */
+/* 信纸：信封内的白底板，祝福字号缩小不溢出，整体在信封中间 */
 .gift-letter {
   position: absolute;
-  left: 16px; right: 16px; top: 54px; bottom: 10px;
+  left: 14px; right: 14px; top: 48px; bottom: 14px;
   background: #fff;
   border-radius: 6px;
   text-align: center;
-  padding: 12px 12px 6px;
+  padding: 10px 14px;
   opacity: 0;
   z-index: 1;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 .giftbox.open .gift-letter {
   animation: letter-in 0.6s ease 1.2s forwards;
@@ -1374,8 +1379,24 @@ textarea.text-input {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.env-letter-title { font-family: 'Caveat', 'Ma Shan Zheng', 'Kaiti SC', 'STKaiti', cursive; font-size: 22px; letter-spacing: 1px; color: var(--pink-deep); }
-.env-letter-msg { font-family: "Songti SC", STSong, "SimSun", "Times New Roman", serif; font-size: 13px; color: var(--ink-soft); line-height: 1.7; margin-top: 6px; letter-spacing: 0.5px; }
+.env-letter-title {
+  font-family: 'Caveat', 'Ma Shan Zheng', 'Kaiti SC', 'STKaiti', cursive;
+  font-size: 21px;
+  letter-spacing: 1px;
+  color: var(--pink-deep);
+  margin: 0 0 6px;
+  line-height: 1.3;
+  max-width: 100%;
+}
+.env-letter-msg {
+  font-family: "Songti SC", STSong, "SimSun", "Times New Roman", serif;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  line-height: 1.65;
+  letter-spacing: 0.5px;
+  margin: 0;
+  max-width: 100%;
+}
 
 /* 提示语 */
 .gift-hint {
