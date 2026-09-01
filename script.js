@@ -705,34 +705,13 @@ function playBoom() {
   } catch (err) { /* 未解锁时静默 */ }
 }
 
-// 首次用户手势统一解锁所有 Web Audio 上下文（绕过浏览器自动播放限制）
-let audioUnlocked = false;
-let typewriterStarted = false;
-
-function ensureTypeCtx() {
-  if (!typeCtx) {
-    try { typeCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
-  }
-  return typeCtx;
-}
-
-// 确认 AudioContext 已 running 后再打字，消除「首几声被吞」的随机静音
-function startTypewriterWhenReady() {
-  if (typewriterStarted) return;
-  ensureTypeCtx();
-  if (!typeCtx) return;
-  if (typeCtx.state === 'running') { runTyping(); return; }
-  // suspended：必须在用户手势内 resume（异步），resume 完成后再打字，
-  // 保证嗒嗒声必然可闻，不再依赖 resume 的快慢
-  typeCtx.resume().then(() => runTyping()).catch(() => runTyping());
-}
-
-function runTyping() {
+// 开场眉标打字机：HAPPY BIRTHDAY 逐字出现 + 光标 + 嗒嗒音效
+// 加载即自动播放（无需点击）。本地 file:// 有声音；严格 https 下浏览器自动播放策略会静音（属限制，非 bug）
+function typeOpeningEyebrow() {
   const el = document.getElementById('opening-eyebrow');
-  if (!el || typewriterStarted) return;
-  typewriterStarted = true;
-  const full = el.dataset.full || (el.dataset.full = (el.textContent || '').trim());
-  if (!full) { typewriterStarted = false; return; }
+  if (!el) return;
+  const full = (el.textContent || '').trim();
+  if (!full) return;
   el.textContent = '';
   el.classList.add('typing');
   let i = 0;
@@ -744,32 +723,6 @@ function runTyping() {
       setTimeout(() => el.classList.remove('typing'), 800);
     }
   }, 130);
-}
-
-function unlockAudio() {
-  if (audioUnlocked) return;
-  audioUnlocked = true;
-  ensureTypeCtx();
-  if (typeCtx && typeCtx.state === 'suspended') typeCtx.resume().catch(() => {});
-  if (boomCtx && boomCtx.state === 'suspended') boomCtx.resume().catch(() => {});
-  // 解锁后立即补播打字机（resume 已在手势内触发，确定性地发声）
-  startTypewriterWhenReady();
-}
-
-// 开场眉标打字机：HAPPY BIRTHDAY 逐字出现 + 光标 + 嗒嗒音效
-function typeOpeningEyebrow() {
-  const el = document.getElementById('opening-eyebrow');
-  if (!el) return;
-  const full = (el.textContent || '').trim();
-  if (!full) return;
-  el.dataset.full = full;
-  // 先静态展示完整文案，避免加载阶段空白
-  el.textContent = full;
-  el.classList.remove('typing');
-  const ctx = ensureTypeCtx();
-  // 本地/已交互：上下文已 running，直接播打字音效
-  if (ctx && ctx.state === 'running') runTyping();
-  // 线上首次加载：由首次用户手势 unlockAudio() 触发 startTypewriterWhenReady（确定性发声）
 }
 
 function setupOpening() {
@@ -784,8 +737,8 @@ function setupOpening() {
   cake.addEventListener('click', () => {
     if (flame.classList.contains('out')) return;
     flame.classList.add('out');
-    tryStartMusic(); // 先用手势激活背景音乐播放（绕过自动播放限制）
-    unlockAudio();   // 再解锁 Web Audio（打字机/烟花音效）
+    // ★ user gesture：在点蜡烛的瞬间同步启动背景音乐（绕过自动播放限制）
+    tryStartMusic();
     // 1 秒后弹出黑底许愿层
     setTimeout(() => { wishOverlay.classList.add('show'); }, 800);
   });
@@ -1308,11 +1261,6 @@ document.addEventListener('DOMContentLoaded', () => {
   setupFinale();
   setupJourneyTab();
   setupMusic();
-
-  // 首次任意手势解锁 Web Audio（保证线上打字机/烟花音效能发声）
-  ['pointerdown', 'touchstart', 'keydown', 'click'].forEach(ev =>
-    document.addEventListener(ev, unlockAudio, { capture: true, passive: true })
-  );
 
   // 初始章节：opening
   goChapter('chapter-opening');
