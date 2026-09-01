@@ -707,17 +707,53 @@ function playBoom() {
 
 // 首次用户手势统一解锁所有 Web Audio 上下文（绕过浏览器自动播放限制）
 let audioUnlocked = false;
-function unlockAudio() {
-  if (audioUnlocked) return;
-  audioUnlocked = true;
-  if (typeCtx && typeCtx.state === 'suspended') typeCtx.resume().catch(() => {});
-  if (boomCtx && boomCtx.state === 'suspended') boomCtx.resume().catch(() => {});
-}
+let typewriterStarted = false;
+
 function ensureTypeCtx() {
   if (!typeCtx) {
     try { typeCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
   }
   return typeCtx;
+}
+
+// 确认 AudioContext 已 running 后再打字，消除「首几声被吞」的随机静音
+function startTypewriterWhenReady() {
+  if (typewriterStarted) return;
+  ensureTypeCtx();
+  if (!typeCtx) return;
+  if (typeCtx.state === 'running') { runTyping(); return; }
+  // suspended：必须在用户手势内 resume（异步），resume 完成后再打字，
+  // 保证嗒嗒声必然可闻，不再依赖 resume 的快慢
+  typeCtx.resume().then(() => runTyping()).catch(() => runTyping());
+}
+
+function runTyping() {
+  const el = document.getElementById('opening-eyebrow');
+  if (!el || typewriterStarted) return;
+  typewriterStarted = true;
+  const full = el.dataset.full || (el.dataset.full = (el.textContent || '').trim());
+  if (!full) { typewriterStarted = false; return; }
+  el.textContent = '';
+  el.classList.add('typing');
+  let i = 0;
+  const timer = setInterval(() => {
+    el.textContent = full.slice(0, ++i);
+    playTypeTick();
+    if (i >= full.length) {
+      clearInterval(timer);
+      setTimeout(() => el.classList.remove('typing'), 800);
+    }
+  }, 130);
+}
+
+function unlockAudio() {
+  if (audioUnlocked) return;
+  audioUnlocked = true;
+  ensureTypeCtx();
+  if (typeCtx && typeCtx.state === 'suspended') typeCtx.resume().catch(() => {});
+  if (boomCtx && boomCtx.state === 'suspended') boomCtx.resume().catch(() => {});
+  // 解锁后立即补播打字机（resume 已在手势内触发，确定性地发声）
+  startTypewriterWhenReady();
 }
 
 // 开场眉标打字机：HAPPY BIRTHDAY 逐字出现 + 光标 + 嗒嗒音效
@@ -726,41 +762,14 @@ function typeOpeningEyebrow() {
   if (!el) return;
   const full = (el.textContent || '').trim();
   if (!full) return;
-  // 先静态展示完整文案，避免加载阶段空白；解锁后再重播打字动画 + 音效
+  el.dataset.full = full;
+  // 先静态展示完整文案，避免加载阶段空白
   el.textContent = full;
   el.classList.remove('typing');
-
-  let i = 0, timer = null;
-  function runTyping() {
-    if (timer) return;
-    el.textContent = '';
-    el.classList.add('typing');
-    i = 0;
-    timer = setInterval(() => {
-      el.textContent = full.slice(0, ++i);
-      playTypeTick();
-      if (i >= full.length) {
-        clearInterval(timer);
-        timer = null;
-        setTimeout(() => el.classList.remove('typing'), 800);
-      }
-    }, 130);
-  }
-
   const ctx = ensureTypeCtx();
   // 本地/已交互：上下文已 running，直接播打字音效
-  if (ctx && ctx.state === 'running') { runTyping(); return; }
-  // 线上首次加载：等用户首次手势解锁音频后再打字（保证能听到嗒嗒声）
-  const startOnUnlock = () => {
-    document.removeEventListener('pointerdown', startOnUnlock);
-    document.removeEventListener('touchstart', startOnUnlock);
-    document.removeEventListener('keydown', startOnUnlock);
-    unlockAudio();
-    runTyping();
-  };
-  document.addEventListener('pointerdown', startOnUnlock, { once: true });
-  document.addEventListener('touchstart', startOnUnlock, { once: true });
-  document.addEventListener('keydown', startOnUnlock, { once: true });
+  if (ctx && ctx.state === 'running') runTyping();
+  // 线上首次加载：由首次用户手势 unlockAudio() 触发 startTypewriterWhenReady（确定性发声）
 }
 
 function setupOpening() {
@@ -775,9 +784,8 @@ function setupOpening() {
   cake.addEventListener('click', () => {
     if (flame.classList.contains('out')) return;
     flame.classList.add('out');
-    unlockAudio(); // 用户手势：解锁 Web Audio（打字机/烟花音效）
-    // ★ user gesture：在点蜡烛的瞬间同步启动音乐（绕过自动播放限制）
-    tryStartMusic();
+    tryStartMusic(); // 先用手势激活背景音乐播放（绕过自动播放限制）
+    unlockAudio();   // 再解锁 Web Audio（打字机/烟花音效）
     // 1 秒后弹出黑底许愿层
     setTimeout(() => { wishOverlay.classList.add('show'); }, 800);
   });
@@ -1208,17 +1216,17 @@ function setupMusic() {
     }
     BgMusic.audio = new Audio(SONGS[BgMusic.curIdx]);
     BgMusic.audio.preload = 'auto';
+    BgMusic.audio.load(); // 立即开始缓冲，缩短首次手势到出声的延迟
     BgMusic.audio.volume = 0.6;
     BgMusic.audio.addEventListener('ended', () => {
       BgMusic.curIdx++;
       tryNext();
       BgMusic.wantPlay = true; // 下一首在 canplay 时自动续播
     });
-    BgMusic.audio.addEventListener('canplay', () => {
+    // 缓冲就绪后若已请求播放且仍暂停，则自动续播（消除 ready/play 时序竞态）
+    const autoStartIfWanted = () => {
       btn.classList.remove('hidden');
       BgMusic.ready = true;
-      // 已在用户手势中请求播放（如点蜡烛），缓冲就绪后自动开始，
-      // 不再受 ready 竞态影响
       if (BgMusic.wantPlay && BgMusic.audio.paused) {
         BgMusic.audio.play().then(() => {
           BgMusic.isPlaying = true;
@@ -1226,6 +1234,13 @@ function setupMusic() {
           document.getElementById('music-hint').classList.add('hidden');
         }).catch(() => {});
       }
+    };
+    BgMusic.audio.addEventListener('canplay', autoStartIfWanted);
+    BgMusic.audio.addEventListener('loadeddata', autoStartIfWanted);
+    BgMusic.audio.addEventListener('playing', () => {
+      BgMusic.isPlaying = true;
+      btn.classList.add('playing');
+      document.getElementById('music-hint').classList.add('hidden');
     });
     BgMusic.audio.addEventListener('error', () => {
       BgMusic.curIdx++;
